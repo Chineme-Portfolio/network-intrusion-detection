@@ -1,0 +1,18 @@
+# --- Data ---
+# CICIDS 2017 is large (~1.7 GB) and not redistributed here.
+# Keep the folder structure, ignore the contents. See README for download.
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# --- Python environment ---
+.venv/
+__pycache__/
+*.py[cod]
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- macOS ---
+.DS_Store

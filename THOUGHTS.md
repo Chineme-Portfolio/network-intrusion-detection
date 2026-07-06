@@ -46,3 +46,10 @@
 > *"what if i phrase it in a way that gives OR logic"*
  
 ---
+
+---
+### Compiled thoughts Day ...
+
+> *"Working on with CICIDS... feature engineering is a thing... the datset i am working with has already been engineered... i can work with the actual raw data and engineer it my own way"*
+
+---

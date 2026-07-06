@@ -1,0 +1,2 @@
+# Place the CICIDS 2017 "MachineLearningCVE" CSVs here, under MachineLearningCVE/.
+# Raw data is immutable: never edit these files; derive everything into ../processed/.
