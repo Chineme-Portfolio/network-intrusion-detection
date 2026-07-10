@@ -5,7 +5,8 @@ network-flow dataset, run as self-paced sprints. The deliverable that matters is
 *documented reasoning*, not just the classifier.
 
 > Status: **Sprint 2 — Clean & Prep** (Sprints 0–1 complete: setup + EDA). Cleaning pipeline
-> and the stratified train/test split are done; the imbalance strategy is the next decision.
+> and the stratified train/test split are done; the imbalance strategy is **decided**
+> (baseline-first, `foundation.md §7 #12`) — next is the Sprint 3 Decision Tree build.
 
 ## Dataset
 

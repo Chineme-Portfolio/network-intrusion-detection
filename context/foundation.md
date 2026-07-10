@@ -28,7 +28,7 @@ Primarily the builder (learning ML from a security foundation). Secondarily: (a)
 
 **Success** = both: a portfolio piece whose reasoning is legible to someone else, and genuine ML understanding (can explain every choice cold). Not a production detector.
 
-**Stage:** mid-**Sprint 2** (Clean & Prep). Sprints 0–1 (setup, EDA) complete; row-local cleaning + the train/test split done; the imbalance strategy is the next open decision. See the sprint arc in §6.
+**Stage:** **Sprint 3** (Decision Tree). Sprints 0–2 complete — cleaning, split, and the train-max fill verified on real data; the split is persisted to `data/processed/`. The imbalance strategy is **decided** (§7 #12). `03_dt.ipynb` holds the baseline tree, awaiting its first full run. See the sprint arc in §6.
 
 ## §4 Guiding principles
 
@@ -74,11 +74,11 @@ Label identity: original 15-class `label` (kept) → `label_binary` (0 benign / 
 
 - `nid.py` — data loader (glob + concat the raw CSVs)
 - `notebooks/01_eda.ipynb` — Sprint 1 exploratory analysis (the diagnosis)
-- `notebooks/02_cleaning.ipynb` — Sprint 2 cleaning + split pipeline (the current work)
-- `notebooks/03_*` — 🟡 the Decision Tree (Sprint 3–4), then SVM (Sprint 5), then the comparison (Sprint 6)
+- `notebooks/02_cleaning.ipynb` — Sprint 2 cleaning + split pipeline; persists the split to `data/processed/` (complete)
+- `notebooks/03_dt.ipynb` — 🟡 the baseline Decision Tree (Sprint 3–4); then SVM (Sprint 5), then the comparison (Sprint 6)
 
 **The sprint arc** (methodology in `NIDS_Sprint_Framework.pdf`):
-`0 Setup ✅ · 1 EDA ✅ · 2 Clean & Prep 🟡 · 3 DT build ⬜ · 4 DT evaluate (the gate) ⬜ · 5 SVM ⬜ · 6 compare + writeup ⬜`
+`0 Setup ✅ · 1 EDA ✅ · 2 Clean & Prep ✅ · 3 DT build 🟡 · 4 DT evaluate (the gate) ⬜ · 5 SVM ⬜ · 6 compare + writeup ⬜`
 
 ## §7 Locked decisions
 
@@ -97,6 +97,7 @@ The heart of the file. Other files cite these as `foundation.md §7 #N`.
 | 9 | **Split**: X = 65 features (3 label cols dropped), y = `label_binary`, **stratify on multi-class `label`**, `test_size=0.2`, `random_state=42` | Stratify-on-multiclass keeps rare attacks in **both** splits *and* preserves 80/20; fixed seed = reproducibility + fair DT-vs-SVM comparison | Stratify on binary only (rare classes could vanish from test); no seed (non-reproducible) |
 | 10 | **Leakage discipline**: row-local ops anytime; **fitted ops (impute/scale/resample) computed on train only, post-split** | The test set must not influence cleaning, or the Sprint 4 scores lie | Clean-everything-then-split (leaks fitted stats into test) |
 | 11 | **Modeling arc: Decision Tree first, then SVM** (SVM gated on DT genuinely understood) | DT is explainable (traceable splits; entropy/info-gain made concrete); SVM contrasts (margins, scaling suddenly matters) | Jump to a strong model / skip the understanding step |
+| 12 | **Imbalance: baseline first, then reweight; resampling deferred.** Train the plain tree on the real 80/20 and evaluate by **recall + confusion matrix, never accuracy**; *then* apply `class_weight` (hand-set ~`{0:1, 1:3}` or `'balanced'` ≈ inverse-frequency `{0:1, 1:4}`) and measure the shift; under/oversampling (SMOTE) deferred unless the numbers demand it. All rebalancing is **train-only, post-split** (see #10). | Can't value an intervention without a baseline; keeps every real row first; confronts the §11 trap by *measuring* it before treating it. `class_weight` weights each row by class, so errors on the rare class (missed attacks / FN) cost more | Jump straight to SMOTE / undersampling — invents synthetic flows or discards ~1.7M real benign rows before knowing a reweight suffices |
 
 Cleaned frame after §7 #4–#9: **2,830,628 × 68** (train 2,264,502 / test 566,126, both 19.70% malicious).
 
@@ -123,17 +124,17 @@ Not an app — the "architecture" is a **data pipeline**, and its keystone is th
 
 - **Full 2.83M rows loaded into memory each run** (~1.7 GB parse). Fine now; if iteration gets slow, cache the combined/cleaned frame to `data/processed/*.parquet`. 🕗
 - **All duplicate rows kept** (§7 #8) — accepted, with the leakage caveat to watch in Sprint 4.
-- Notebooks re-run top-to-bottom from raw each session (no persisted intermediate state between notebooks — by design, for reproducibility).
+- `02_cleaning` re-runs from raw, then **persists its train/test split to `data/processed/*.parquet`** (§7 #9); modeling notebooks (`03+`) load that split rather than re-cleaning — still reproducible (fixed split), no 1.7 GB re-parse each modeling session.
 
 ## §11 The deepest risk
 
-**The imbalance/evaluation-honesty bet.** With ~80% benign, a model that simply predicts "benign" scores ~80% accuracy and detects **nothing**. If that trap isn't confronted — and if leakage inflates the test scores on top of it — the project produces an impressive-looking number that means nothing, which is the exact failure this project exists to *not* make (a lab-strong detector blind to real attacks). The intellectual core is **honest evaluation under class imbalance, in a security frame** (a false negative = a missed intrusion, and costs more than a false alarm). This is why leakage discipline (§7 #10) is non-negotiable and why the imbalance strategy (§12) is the pivotal open decision. It **detonates in Sprint 4** — the evaluate-the-tree gate.
+**The imbalance/evaluation-honesty bet.** With ~80% benign, a model that simply predicts "benign" scores ~80% accuracy and detects **nothing**. If that trap isn't confronted — and if leakage inflates the test scores on top of it — the project produces an impressive-looking number that means nothing, which is the exact failure this project exists to *not* make (a lab-strong detector blind to real attacks). The intellectual core is **honest evaluation under class imbalance, in a security frame** (a false negative = a missed intrusion, and costs more than a false alarm). This is why leakage discipline (§7 #10) is non-negotiable and why the imbalance strategy is the pivotal decision (approach locked in **§7 #12**; its outcome settled by measurement in Sprint 4). It **detonates in Sprint 4** — the evaluate-the-tree gate.
 
 ## §12 Open questions
 
-- 🕗 **Imbalance strategy** — resample (SMOTE / undersample) vs. `class_weight` vs. leave-it-and-measure-honestly. *The next decision*, on the train-only side of the split. Ties directly to §11.
+- ✅ **Imbalance strategy** — *decided (§7 #12)*: baseline first (plain tree, honest metrics) → `class_weight` → resampling deferred. Still open, and **settled by measurement in Sprint 4**: whether `class_weight` suffices or resampling is needed, and the exact weight ratio (`{0:1, 1:3}` vs `'balanced'`).
 - 🟡 **Deferred rate-column max-fill** — decided in principle (train max, §7 #5), not yet implemented.
 - ⬜ **Decision Tree hyperparameters** — `criterion`, `max_depth`, etc. (Sprint 3).
 - ⬜ **SVM specifics** — kernel, `C`, feature scaling approach (Sprint 5).
 - 🕗 **Primary evaluation metric** for an IDS — leaning recall-on-malicious / F1, but not locked (Sprint 4).
-- 🕗 **Persist processed train/test to `data/processed/`** (parquet) or keep in-notebook only.
+- ✅ **Persist processed train/test to `data/processed/`** — *decided*: `02` step 8 saves `X_train/X_test/y_train/y_test` as parquet (`pyarrow`); modeling notebooks load them (git-ignored, regenerable).
