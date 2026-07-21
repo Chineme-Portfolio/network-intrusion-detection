@@ -53,3 +53,36 @@
 > *"Working on with CICIDS... feature engineering is a thing... the datset i am working with has already been engineered... i can work with the actual raw data and engineer it my own way"*
 
 ---
+
+---
+### Compiled thoughts — reviewing `01` (2026-07-06)
+
+> *"isn't x and y used for graph plotting.. so i was asking how are we reducing 78 columns to X"*
+
+> *"not individual packets but packet collection ~ But are these not monitoring 'actions' on a network like a HTTP request → which involves multiple packets. File transfer → multiple packets too."*
+
+> *"I didn't permanently alter the original 'df' — I placed it in a var"*
+
+> *"okay i see i tried categorizing the ports so they can be smaller.. did i later apply it in 02 and 03?"*
+
+---
+
+---
+### Compiled thoughts — reviewing `02` (2026-07-06)
+
+> *"why is that comment there?? 'rare attacks in both train and test'... i thought we binarized the labels.. so it's either 'Benign' and 'not benign'"*
+
+---
+
+---
+### Compiled thoughts — reviewing `03` (2026-07-06)
+
+> *"why a dummy classifier.. and what kind of classifier is the dummy is it also a decision tree"*
+
+> *"the train accuracy is suppoes to be 100%.. why is it 99.98%?"*
+
+> *"how does actual benign and pred benign have the same number"*
+
+> *"recall is less than precision.. which is bad right.. we want to catch more malicious than benign"*
+
+---

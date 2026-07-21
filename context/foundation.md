@@ -1,6 +1,6 @@
 # Network Intrusion Detection (NIDS) — Foundation
 
-> **Status:** v2 — converged. Last updated 2026-07-06. Changes from v1: inlined the full "how we work" collaboration protocol into §4 (removed the pointer to private session memory); builder signed off on the §7 decision table and the §11 risk framing.
+> **Status:** v2 — converged. Last updated 2026-07-06. Changes from v1: inlined the full "how we work" collaboration protocol into Section 4 (removed the pointer to private session memory); builder signed off on the Section 7 decision table and the Section 11 risk framing.
 > **Source of truth.** Every other file (`README.md`, `context/ml-practices.md`, `LEARNING_LOG.md`) references this; none restate it. If any file disagrees with this one, this one wins.
 > Real name — no codename. Methodology lives in `NIDS_Sprint_Framework.pdf`; this file holds the *technical* decisions and reasoning.
 
@@ -8,33 +8,33 @@
 
 ---
 
-## §0 Build constraints
+## Section 0 — Build constraints
 
 Solo. A **learning project** first, portfolio artifact second. Self-paced — no calendar; sprints advance on exit checks, sessions logged in `LEARNING_LOG.md`. Budget: local machine + a public dataset (free). Builder background: M.S. Software Engineering, Application Security → AI Security — the security domain knowledge is the asset the ML is layered onto.
 
-**The forcing function:** understanding beats speed. The goal is to grasp every decision deeply enough to replicate the whole workflow solo later. This is why scope stays narrow (§8) and why *how we work* (§4) is itself a locked constraint, not a preference.
+**The forcing function:** understanding beats speed. The goal is to grasp every decision deeply enough to replicate the whole workflow solo later. This is why scope stays narrow (Section 8) and why *how we work* (Section 4) is itself a locked constraint, not a preference.
 
-## §1 What it is
+## Section 1 — What it is
 
 A Network Intrusion Detection System that classifies network flows as **benign vs malicious**, built as a hands-on vehicle for learning machine learning — Decision Tree first, then SVM — on the CICIDS 2017 dataset.
 
 The edge: it leverages an existing security background rather than starting cold, and it optimizes for *understood* decisions over an impressive-looking model. The deliverable a reader values isn't the classifier — it's the documented reasoning around it.
 
-## §2 Who it's for
+## Section 2 — Who it's for
 
 Primarily the builder (learning ML from a security foundation). Secondarily: (a) future AI coding-agent sessions that need to continue without re-deciding what's settled, and (b) a portfolio reader — a hiring manager, or the builder's own future "AI Fundamentals" self — who should be able to read the repo and follow the thinking.
 
-## §3 Success & stage
+## Section 3 — Success & stage
 
 **Success** = both: a portfolio piece whose reasoning is legible to someone else, and genuine ML understanding (can explain every choice cold). Not a production detector.
 
-**Stage:** **Sprint 3** (Decision Tree). Sprints 0–2 complete — cleaning, split, and the train-max fill verified on real data; the split is persisted to `data/processed/`. The imbalance strategy is **decided** (§7 #12). `03_dt.ipynb` holds the baseline tree, awaiting its first full run. See the sprint arc in §6.
+**Stage:** **Sprint 3** (Decision Tree). Sprints 0–2 complete — cleaning, split, and the train-max fill verified on real data; the split is persisted to `data/processed/`. The imbalance strategy is **decided** (Section 7 #12). `03_dt.ipynb` holds the baseline tree, awaiting its first full run. See the sprint arc in Section 6.
 
-## §4 Guiding principles
+## Section 4 — Guiding principles
 
 ### How we work — the collaboration protocol [LOCKED]
 
-This is a **learning project**, so the working method is itself a locked constraint (§0). Any agent picking up this repo works this way:
+This is a **learning project**, so the working method is itself a locked constraint (Section 0). Any agent picking up this repo works this way:
 
 - **The builder drives every decision** — methodology, data handling, modeling, down to small details. The agent does **not** make methodological or architectural calls on their behalf.
 - **The agent builds only after a decision is made**, then writes exactly the code that implements it — nothing more. No optimizing, refactoring, or scaffolding beyond the current block.
@@ -52,10 +52,10 @@ This is a **learning project**, so the working method is itself a locked constra
 
 - **"Done" is defined, not felt.** Every sprint has an exit check; advance on proof, not boredom.
 - **Just-in-time theory.** Pull the exact slice of AIMA / scikit-learn docs when a concrete confusion makes the question real — not chapter-first.
-- **Honest evaluation over flattering numbers.** The imbalance and leakage traps are confronted, not hidden (§11).
+- **Honest evaluation over flattering numbers.** The imbalance and leakage traps are confronted, not hidden (Section 11).
 - **Raw data is immutable.** Never edit `data/raw/`; derive everything into `data/processed/`.
 
-## §5 Core model
+## Section 5 — Core model
 
 The central object is a **network flow** — one CICFlowMeter record: 78 numeric features (durations, packet counts, byte/packet rates, IATs, TCP flags, header/segment sizes…) plus a label.
 
@@ -66,9 +66,9 @@ raw flow (data/raw) → cleaned (leak-free, in 02_cleaning) → split (train/tes
                     → fitted-clean (train-only stats applied) → classified (DT / SVM) → evaluated
 ```
 
-Label identity: original 15-class `label` (kept) → `label_binary` (0 benign / 1 malicious, **positive = malicious**) → `label_text` (human-readable). See §7 #3.
+Label identity: original 15-class `label` (kept) → `label_binary` (0 benign / 1 malicious, **positive = malicious**) → `label_text` (human-readable). See Section 7 #3.
 
-## §6 Core flows & surfaces
+## Section 6 — Core flows & surfaces
 
 **Surfaces:** Jupyter notebooks + a small loader script. No app, API, DB, or UI.
 
@@ -80,13 +80,13 @@ Label identity: original 15-class `label` (kept) → `label_binary` (0 benign / 
 **The sprint arc** (methodology in `NIDS_Sprint_Framework.pdf`):
 `0 Setup ✅ · 1 EDA ✅ · 2 Clean & Prep ✅ · 3 DT build 🟡 · 4 DT evaluate (the gate) ⬜ · 5 SVM ⬜ · 6 compare + writeup ⬜`
 
-## §7 Locked decisions
+## Section 7 — Locked decisions
 
-The heart of the file. Other files cite these as `foundation.md §7 #N`.
+The heart of the file. Other files cite these as `foundation.md Section 7 #N`.
 
 | # | Decision | Reasoning | Rejected alternative |
 |---|---|---|---|
-| 1 | **Dataset: CICIDS 2017 "MachineLearningCVE" CSVs** (pre-engineered CICFlowMeter features), all 8 days combined → **2,830,743 × 79** | Security background is the asset; pre-engineered features keep focus on the ML workflow, not feature extraction | Raw PCAPs + own feature engineering (deferred, §8) |
+| 1 | **Dataset: CICIDS 2017 "MachineLearningCVE" CSVs** (pre-engineered CICFlowMeter features), all 8 days combined → **2,830,743 × 79** | Security background is the asset; pre-engineered features keep focus on the ML workflow, not feature extraction | Raw PCAPs + own feature engineering (deferred, Section 8) |
 | 2 | **Lightweight repo structure** (`data/{raw,processed}`, `notebooks/`, docs at root); **data git-ignored** | Scales cleanly, portfolio-ready, no over-scaffolding; 1.7 GB must never enter git history | Flat (junk drawer); full cookiecutter (empty-dir over-scaffold) |
 | 3 | **Binary target** `label_binary` (malicious=1, benign=0); keep multi-class `label`; add `label_text` | Tames catastrophic 15-class imbalance to ~80/20; sidesteps the `�` label corruption; matches the core IDS question; **malicious = positive** → recall = detection rate, FN = missed intrusion | Multi-class (rare classes 11–36 rows, unlearnable/unevaluable); attack-family grouping (deferred) |
 | 4 | **Column names → snake_case** via `re.sub(r'[^0-9a-zA-Z]+','_', name.strip()).strip('_').lower()` | CICIDS ships **leading-space** column names (known gotcha); clean, collision-free references | Leave as-is (fragile selections) |
@@ -97,11 +97,12 @@ The heart of the file. Other files cite these as `foundation.md §7 #N`.
 | 9 | **Split**: X = 65 features (3 label cols dropped), y = `label_binary`, **stratify on multi-class `label`**, `test_size=0.2`, `random_state=42` | Stratify-on-multiclass keeps rare attacks in **both** splits *and* preserves 80/20; fixed seed = reproducibility + fair DT-vs-SVM comparison | Stratify on binary only (rare classes could vanish from test); no seed (non-reproducible) |
 | 10 | **Leakage discipline**: row-local ops anytime; **fitted ops (impute/scale/resample) computed on train only, post-split** | The test set must not influence cleaning, or the Sprint 4 scores lie | Clean-everything-then-split (leaks fitted stats into test) |
 | 11 | **Modeling arc: Decision Tree first, then SVM** (SVM gated on DT genuinely understood) | DT is explainable (traceable splits; entropy/info-gain made concrete); SVM contrasts (margins, scaling suddenly matters) | Jump to a strong model / skip the understanding step |
-| 12 | **Imbalance: baseline first, then reweight; resampling deferred.** Train the plain tree on the real 80/20 and evaluate by **recall + confusion matrix, never accuracy**; *then* apply `class_weight` (hand-set ~`{0:1, 1:3}` or `'balanced'` ≈ inverse-frequency `{0:1, 1:4}`) and measure the shift; under/oversampling (SMOTE) deferred unless the numbers demand it. All rebalancing is **train-only, post-split** (see #10). | Can't value an intervention without a baseline; keeps every real row first; confronts the §11 trap by *measuring* it before treating it. `class_weight` weights each row by class, so errors on the rare class (missed attacks / FN) cost more | Jump straight to SMOTE / undersampling — invents synthetic flows or discards ~1.7M real benign rows before knowing a reweight suffices |
+| 12 | **Imbalance: baseline first, then reweight; resampling deferred.** Train the plain tree on the real 80/20 and evaluate by **recall + confusion matrix, never accuracy**; *then* apply `class_weight` (hand-set ~`{0:1, 1:3}` or `'balanced'` ≈ inverse-frequency `{0:1, 1:4}`) and measure the shift; under/oversampling (SMOTE) deferred unless the numbers demand it. All rebalancing is **train-only, post-split** (see #10). | Can't value an intervention without a baseline; keeps every real row first; confronts the Section 11 trap by *measuring* it before treating it. `class_weight` weights each row by class, so errors on the rare class (missed attacks / FN) cost more | Jump straight to SMOTE / undersampling — invents synthetic flows or discards ~1.7M real benign rows before knowing a reweight suffices |
+| 13 | **Port encoding: IANA range-buckets** (well-known 0–1023 / registered / ephemeral, one-hot), folded in via `02b_features.ipynb` → modeling feature set **65 → 67**; row-local (fixed thresholds), pre-split-safe | Measured: coarsening the 51k-cardinality port **regularises** it — recall 0.9966 → 0.9984 (missed intrusions ~halved), simpler tree (3109 → 1733 leaves), −0.0005 precision. Raw port was mildly overfitting capture-specific quirks | Raw int (mild overfit); one-hot all 51k ports (infeasible); frequency/target encoding (fitted → deferred) |
 
-Cleaned frame after §7 #4–#9: **2,830,628 × 68** (train 2,264,502 / test 566,126, both 19.70% malicious).
+Cleaned frame after Section 7 #4–#9: **2,830,628 × 68** (train 2,264,502 / test 566,126, both 19.70% malicious).
 
-## §8 Scope
+## Section 8 — Scope
 
 ### In (v1)
 Binary benign-vs-malicious classification on the pre-engineered features; Decision Tree + SVM; the full sprint arc through the Sprint 6 comparison + portfolio writeup.
@@ -112,29 +113,34 @@ Multi-class / per-attack classification · deep learning · deployment / real-ti
 ### Deferred
 Attack-**family** grouping (a middle ground between binary and 15-class) · feature engineering from raw PCAPs · revisiting the duplicate-row and imbalance decisions once measured.
 
-## §9 Architecture keystones
+## Section 9 — Architecture keystones
 
-Not an app — the "architecture" is a **data pipeline**, and its keystone is the **train/test split (§7 #9): the leakage boundary.** Everything before it is row-local and safe on the full dataset; everything *fitted* (imputation, scaling, resampling) happens after it, on train only.
+Not an app — the "architecture" is a **data pipeline**, and its keystone is the **train/test split (Section 7 #9): the leakage boundary.** Everything before it is row-local and safe on the full dataset; everything *fitted* (imputation, scaling, resampling) happens after it, on train only.
 
 - **Raw → processed, one direction.** `data/raw/` is immutable; `data/processed/` is derived and regenerable.
 - **Explicit over magic.** Cleaning is hand-written, verified steps in a readable notebook — not a black-box `Pipeline` — because the point is to *understand* each transform. (Implementation conventions: `context/ml-practices.md`.)
 - **Reproducibility is structural:** fixed `random_state`, run-from-project-root paths, frozen `requirements.txt`.
 
-## §10 Known scale seams
+## Section 10 — Known scale seams
 
 - **Full 2.83M rows loaded into memory each run** (~1.7 GB parse). Fine now; if iteration gets slow, cache the combined/cleaned frame to `data/processed/*.parquet`. 🕗
-- **All duplicate rows kept** (§7 #8) — accepted, with the leakage caveat to watch in Sprint 4.
-- `02_cleaning` re-runs from raw, then **persists its train/test split to `data/processed/*.parquet`** (§7 #9); modeling notebooks (`03+`) load that split rather than re-cleaning — still reproducible (fixed split), no 1.7 GB re-parse each modeling session.
+- **All duplicate rows kept** (Section 7 #8) — accepted, with the leakage caveat to watch in Sprint 4.
+- `02_cleaning` re-runs from raw, then **persists its train/test split to `data/processed/*.parquet`** (Section 7 #9); modeling notebooks (`03+`) load that split rather than re-cleaning — still reproducible (fixed split), no 1.7 GB re-parse each modeling session.
 
-## §11 The deepest risk
+## Section 11 — The deepest risk
 
-**The imbalance/evaluation-honesty bet.** With ~80% benign, a model that simply predicts "benign" scores ~80% accuracy and detects **nothing**. If that trap isn't confronted — and if leakage inflates the test scores on top of it — the project produces an impressive-looking number that means nothing, which is the exact failure this project exists to *not* make (a lab-strong detector blind to real attacks). The intellectual core is **honest evaluation under class imbalance, in a security frame** (a false negative = a missed intrusion, and costs more than a false alarm). This is why leakage discipline (§7 #10) is non-negotiable and why the imbalance strategy is the pivotal decision (approach locked in **§7 #12**; its outcome settled by measurement in Sprint 4). It **detonates in Sprint 4** — the evaluate-the-tree gate.
+**The imbalance/evaluation-honesty bet.** With ~80% benign, a model that simply predicts "benign" scores ~80% accuracy and detects **nothing**. If that trap isn't confronted — and if leakage inflates the test scores on top of it — the project produces an impressive-looking number that means nothing, which is the exact failure this project exists to *not* make (a lab-strong detector blind to real attacks). The intellectual core is **honest evaluation under class imbalance, in a security frame** (a false negative = a missed intrusion, and costs more than a false alarm). This is why leakage discipline (Section 7 #10) is non-negotiable and why the imbalance strategy is the pivotal decision (approach locked in **Section 7 #12**; its outcome settled by measurement in Sprint 4). It **detonates in Sprint 4** — the evaluate-the-tree gate.
 
-## §12 Open questions
+## Section 12 — Open questions
 
-- ✅ **Imbalance strategy** — *decided (§7 #12)*: baseline first (plain tree, honest metrics) → `class_weight` → resampling deferred. Still open, and **settled by measurement in Sprint 4**: whether `class_weight` suffices or resampling is needed, and the exact weight ratio (`{0:1, 1:3}` vs `'balanced'`).
-- 🟡 **Deferred rate-column max-fill** — decided in principle (train max, §7 #5), not yet implemented.
-- ⬜ **Decision Tree hyperparameters** — `criterion`, `max_depth`, etc. (Sprint 3).
+- ✅ **Imbalance strategy** — *decided (Section 7 #12)*: baseline first (plain tree, honest metrics) → `class_weight` → resampling deferred. Still open, and **settled by measurement in Sprint 4**: whether `class_weight` suffices or resampling is needed, and the exact weight ratio (`{0:1, 1:3}` vs `'balanced'`).
+- ✅ **Deferred rate-column max-fill** — *done*: `02` step 7, train max applied to both splits; verified 1509/2867 filled, 0 NaN remaining.
+- 🟡 **Decision Tree hyperparameters** — baseline locked: `criterion='entropy'` (information gain, AIMA Section 18.3.4), `max_depth=None` (unpruned). Pruning/depth tuning still open (Sprint 4).
 - ⬜ **SVM specifics** — kernel, `C`, feature scaling approach (Sprint 5).
+- ✅ **`destination_port` encoding — decided (Section 7 #13)**: IANA range-buckets (one-hot), folded into the pipeline via `02b_features.ipynb` → featured split at `data/processed/featured/`, feature set 65 → 67. Measured win on the DT (recall 0.9966 → 0.9984, misses ~halved, simpler tree). Alt encodings (top-N + "other", frequency/target) not pursued.
 - 🕗 **Primary evaluation metric** for an IDS — leaning recall-on-malicious / F1, but not locked (Sprint 4).
 - ✅ **Persist processed train/test to `data/processed/`** — *decided*: `02` step 8 saves `X_train/X_test/y_train/y_test` as parquet (`pyarrow`); modeling notebooks load them (git-ignored, regenerable).
+
+---
+
+> **Post-v1 roadmap** (out of current scope — Section 8). v1 delivers the *understood binary model*. After that: **(1) share** the project (LinkedIn / Twitter — the reasoning and the surprise findings, not just the score), then **(2) expand** into a demo — a small web app (Streamlit / Flask) that scores an uploaded flow row benign/malicious, giving the model a tangible face. A *real* NIDS deployment (live packet→flow feature extraction via CICFlowMeter / Zeek, sensor placement, alerting / SIEM) stays out of scope — the trained model is only ~20% of it.

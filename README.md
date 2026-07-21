@@ -6,7 +6,7 @@ network-flow dataset, run as self-paced sprints. The deliverable that matters is
 
 > Status: **Sprint 2 — Clean & Prep** (Sprints 0–1 complete: setup + EDA). Cleaning pipeline
 > and the stratified train/test split are done; the imbalance strategy is **decided**
-> (baseline-first, `foundation.md §7 #12`) — next is the Sprint 3 Decision Tree build.
+> (baseline-first, `foundation.md Section 7 #12`) — next is the Sprint 3 Decision Tree build.
 
 ## Dataset
 
@@ -56,19 +56,19 @@ The source-of-truth docs an agent (or the builder's future self) reads before wr
 
 | File | What it's for |
 |---|---|
-| [`context/foundation.md`](context/foundation.md) | **Source of truth.** Every locked decision + reasoning (§7), how-we-work (§4), scope, deepest risk (§11), open questions (§12). |
+| [`context/foundation.md`](context/foundation.md) | **Source of truth.** Every locked decision + reasoning (Section 7), how-we-work (Section 4), scope, deepest risk (Section 11), open questions (Section 12). |
 | [`context/ml-practices.md`](context/ml-practices.md) | Implementation law — leakage discipline, reproducibility, cleaning/notebook conventions. |
 | `LEARNING_LOG.md` | Living build log (what/when) + the standing "log after any work" instruction. |
 | `THOUGHTS.md` · `QUESTIONS.md` | The builder's raw thinking / running question list. |
 | `NIDS_Sprint_Framework.pdf` | The methodology: sprint structure and exit checks. |
 
-**Reading order:** `foundation.md` (esp. §4, §7, §12) → `ml-practices.md` → `LEARNING_LOG.md` (latest entries) → the current notebook.
+**Reading order:** `foundation.md` (esp. Section 4, Section 7, Section 12) → `ml-practices.md` → `LEARNING_LOG.md` (latest entries) → the current notebook.
 
 **Route by need:**
 
 | You need… | Go to |
 |---|---|
-| A current decision or *why* it was made | `foundation.md` §7 |
+| A current decision or *why* it was made | `foundation.md` Section 7 |
 | A coding / cleaning convention | `ml-practices.md` |
 | What's been done / what changed | `LEARNING_LOG.md` |
 | The sprint structure / exit checks | `NIDS_Sprint_Framework.pdf` |
