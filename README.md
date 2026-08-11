@@ -4,9 +4,10 @@ A build-first **learning project**: Decision Tree and SVM classifiers on the **C
 network-flow dataset, run as self-paced sprints. The deliverable that matters is the
 *documented reasoning*, not just the classifier.
 
-> Status: **Sprint 2 — Clean & Prep** (Sprints 0–1 complete: setup + EDA). Cleaning pipeline
-> and the stratified train/test split are done; the imbalance strategy is **decided**
-> (baseline-first, `foundation.md Section 7 #12`) — next is the Sprint 3 Decision Tree build.
+> Status: **Sprint 6 complete (model zoo + comparison)**. Sprints 0-5 done (setup, EDA,
+> cleaning + split, the Decision Tree, the leakage gate, and the SVMs); port bucketing is
+> folded into the pipeline (`data/processed/featured/`). Five named models built and compared
+> in `07_comparison.ipynb` (the tree wins). Next: the full NIDS, a live-traffic system.
 
 ## Dataset
 

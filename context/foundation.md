@@ -28,7 +28,7 @@ Primarily the builder (learning ML from a security foundation). Secondarily: (a)
 
 **Success** = both: a portfolio piece whose reasoning is legible to someone else, and genuine ML understanding (can explain every choice cold). Not a production detector.
 
-**Stage:** **Sprint 3** (Decision Tree). Sprints 0–2 complete — cleaning, split, and the train-max fill verified on real data; the split is persisted to `data/processed/`. The imbalance strategy is **decided** (Section 7 #12). `03_dt.ipynb` holds the baseline tree, awaiting its first full run. See the sprint arc in Section 6.
+**Stage:** **Sprint 6 complete** (model zoo + comparison). Sprints 0-5 done: cleaning + split, the baseline Decision Tree (built, run, evaluated), the Sprint 4 leakage gate (measured, non-material; honest recall ~0.9969), port bucketing folded into the pipeline (Section 7 #13; featured split at `data/processed/featured/`), and the SVMs (LinearSVC + RBF). Five named models built and compared in `07_comparison.ipynb`: the Decision Tree wins on both recall and precision. Next is the full NIDS (post-v1). See the sprint arc in Section 6.
 
 ## Section 4 — Guiding principles
 
@@ -75,10 +75,10 @@ Label identity: original 15-class `label` (kept) → `label_binary` (0 benign / 
 - `nid.py` — data loader (glob + concat the raw CSVs)
 - `notebooks/01_eda.ipynb` — Sprint 1 exploratory analysis (the diagnosis)
 - `notebooks/02_cleaning.ipynb` — Sprint 2 cleaning + split pipeline; persists the split to `data/processed/` (complete)
-- `notebooks/03_dt.ipynb` — 🟡 the baseline Decision Tree (Sprint 3–4); then SVM (Sprint 5), then the comparison (Sprint 6)
+- `notebooks/03_dt.ipynb` — ✅ the baseline Decision Tree (Sprint 3–4); `05_svm.ipynb` + `06_svm_rbf.ipynb` the SVMs (Sprint 5); `07_comparison.ipynb` the grand comparison (Sprint 6)
 
 **The sprint arc** (methodology in `NIDS_Sprint_Framework.pdf`):
-`0 Setup ✅ · 1 EDA ✅ · 2 Clean & Prep ✅ · 3 DT build 🟡 · 4 DT evaluate (the gate) ⬜ · 5 SVM ⬜ · 6 compare + writeup ⬜`
+`0 Setup ✅ · 1 EDA ✅ · 2 Clean & Prep ✅ · 3 DT build ✅ · 4 DT evaluate (the gate) ✅ · 5 SVM ✅ · 6 compare + writeup ✅`
 
 ## Section 7 — Locked decisions
 
@@ -133,12 +133,12 @@ Not an app — the "architecture" is a **data pipeline**, and its keystone is th
 
 ## Section 12 — Open questions
 
-- ✅ **Imbalance strategy** — *decided (Section 7 #12)*: baseline first (plain tree, honest metrics) → `class_weight` → resampling deferred. Still open, and **settled by measurement in Sprint 4**: whether `class_weight` suffices or resampling is needed, and the exact weight ratio (`{0:1, 1:3}` vs `'balanced'`).
+- ✅ **Imbalance strategy** (Section 7 #12) — resolved in Sprint 6: baselines done, then `class_weight='balanced'` run on every model. On the tree it is a marginal strict win (+44 caught, and 15 fewer false alarms); on the SVMs it lifts recall (~0.88 → ~0.98) but floods false alarms (delta ratio 1:1.25 to 1:2.31, see `07_comparison.ipynb`). Verdict: not worth it for the shipped model (the tree baseline is already balanced); resampling stays deferred. `'balanced'` used throughout; `{0:1,1:3}` not separately swept.
 - ✅ **Deferred rate-column max-fill** — *done*: `02` step 7, train max applied to both splits; verified 1509/2867 filled, 0 NaN remaining.
 - 🟡 **Decision Tree hyperparameters** — baseline locked: `criterion='entropy'` (information gain, AIMA Section 18.3.4), `max_depth=None` (unpruned). Pruning/depth tuning still open (Sprint 4).
-- ⬜ **SVM specifics** — kernel, `C`, feature scaling approach (Sprint 5).
+- ✅ **SVM specifics** (Sprint 5) — `StandardScaler` (fitted train-only) + `LinearSVC` (`dual=False`) baseline, then RBF `SVC` at 50k/250k/500k subsamples (the kernel is O(n²), so it can't take all 2.26M rows). Default `C=1.0` kept. Both are the contrast model; neither beats the tree.
 - ✅ **`destination_port` encoding — decided (Section 7 #13)**: IANA range-buckets (one-hot), folded into the pipeline via `02b_features.ipynb` → featured split at `data/processed/featured/`, feature set 65 → 67. Measured win on the DT (recall 0.9966 → 0.9984, misses ~halved, simpler tree). Alt encodings (top-N + "other", frequency/target) not pursued.
-- 🕗 **Primary evaluation metric** for an IDS — leaning recall-on-malicious / F1, but not locked (Sprint 4).
+- ✅ **Evaluation metric / method** — recall-on-malicious is primary (FN = missed intrusion). Every model *change* is judged by the **delta ratio**: false alarms added per attack caught (ΔFP / ΔFN), weighed against the security cost of a miss vs a false alarm. Ratio ≤ 0 = strict win; ratio ≫ 1 = a costly trade (only worth it if a miss costs that much more). More data tends to be near-free recall; `class_weight` is traded recall. (This is how the builder evaluates models — see `07_comparison.ipynb`.)
 - ✅ **Persist processed train/test to `data/processed/`** — *decided*: `02` step 8 saves `X_train/X_test/y_train/y_test` as parquet (`pyarrow`); modeling notebooks load them (git-ignored, regenerable).
 
 ---

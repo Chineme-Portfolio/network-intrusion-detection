@@ -11,6 +11,9 @@ data/processed/*
 __pycache__/
 *.py[cod]
 
+# --- Models (trained artifacts, regenerable) ---
+models/
+
 # --- Jupyter ---
 .ipynb_checkpoints/
 
