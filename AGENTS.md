@@ -13,6 +13,8 @@
 
 Read before you build: `system/README.md`, then `system/context/foundation.md`, `architecture.md`, `code-standards.md`, and the relevant `library-docs.md` / `devops.md`. Pick the slice from `system/context/build-graph.md`.
 
+Specs for system slices live in `system/docs/specs/` (not the repo-root `docs/`). `/develop` builds from the spec's `## Build plan` and `verify.md`. The current one is `system/docs/specs/0001-layer-0-foundation/` (Layer 0, status Proposed).
+
 ## Agent skills
 
 Installed for this build (open a skill's `SKILL.md` on demand):
