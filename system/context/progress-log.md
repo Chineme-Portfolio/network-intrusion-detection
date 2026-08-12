@@ -8,6 +8,10 @@
 
 ---
 
+### 2026-08-12 · docs · Layer 0 spec designed, cross-checked, accepted
+Area: context. Ran /architect on Layer 0 (build-graph L0.1 to L0.3). Wrote spec `0001-layer-0-foundation` (index + rationale + verify) in `system/docs/specs/`. Settled the three seams: contracts as JSON Schema with codegen to Pydantic + TS; verdict `score` = 0 to 1 (proba for the tree, sigmoid(decision_function) for the SVMs, flagged uncalibrated via `score_kind`); featurizer parity proven by a golden fixture, with `train_max` + the 67 column order + per column dtypes frozen in `featurizer_meta.json`. Cross-checked on Sonnet (verdict: mostly); fixed three real gaps it caught (golden-fixture mispairing via an unsorted glob, int vs float dtype parity, an out-of-range port silently making an all-zero bucket row). Builder accepted. Status Proposed (designed, not built); lifecycle tracked here.
+Next: /develop Layer 0.
+
 ### 2026-08-11 · decision · Named the system "Caught"; added the design handoff
 Area: context. Named the system **Caught** (the verdict a NIDS delivers: an intrusion caught, or a false alarm; continues the Inertia/Graphite naming line). Rippled the name across all `system/` files and the root `AGENTS.md`; `foundation.md` -> v3, Section 12 name question resolved. Added `design-handoff.md` (the Claude Design intake prompt + the UI-trio generation prompt) and created `ui-tokens.md` / `ui-rules.md` / `ui-registry.md` as PENDING stubs. UI prime directive chosen: "make the current verdict, and whether to trust it, obvious at a glance."
 
