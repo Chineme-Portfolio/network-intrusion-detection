@@ -5,7 +5,7 @@
 ## The two context systems
 
 - **ML research project (v1, complete)** — repo-root `context/` + `LEARNING_LOG.md`. Authority on the **model**: the trained artifacts (`models/*.joblib`), the feature contract, the delta-ratio evaluation. Start at `context/foundation.md`.
-- **Deployable NIDS system (v2, active build)** — `system/` + `system/context/`. Authority on the **system**: capture, serving, orchestration, UI. Start at `system/README.md`.
+- **Caught, the deployable NIDS system (v2, active build)** — `system/` + `system/context/`. Authority on the **system**: capture, serving, orchestration, UI. Start at `system/README.md`.
 
 **Precedence:** on a *model* question, `context/foundation.md` wins. On a *system* question, `system/context/foundation.md` wins. Never re-decide a locked decision, cite it (`... foundation.md Section N`) instead.
 

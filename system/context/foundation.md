@@ -1,9 +1,9 @@
-# NIDS Live System — Foundation
+# Caught — Foundation
 
-> **Status:** v2 — converged. Created 2026-08-11, last updated 2026-08-11. Changes from v1: the reference architecture is ratified (Redis topology, FastAPI ml-service, the flow-record and verdict contracts, the registry manifest); phase scope set to CSV replay + PCAP replay + live detection metrics; the keystone is built full-topology from the start. Still open: `score` semantics across models, the system name, and the live-capture tool (deferred to a parity measurement).
+> **Status:** v3 — converged. Created 2026-08-11, last updated 2026-08-11. Changes from v2: the system is named **Caught** (Section 12 resolved). Prior (v1 to v2): the reference architecture ratified, phase scope set to CSV + PCAP + live detection metrics, keystone built full-topology. Still open: `score` semantics across models, and the live-capture tool (deferred to a parity measurement).
 > **What this governs:** the *deployable NIDS system* (replay + live traffic capture, model serving, runtime model-switching, backend, UI). It is a separate context system from the ML research project.
 > **Authority and precedence.** The ML project's `context/foundation.md` is the source of truth for the **model** (the trained artifacts, the feature contract, the evaluation method); this file cites it and never restates it. This file is the source of truth for the **system** (capture, serving, orchestration, UI). One winner per question: on a *model* fact the ML foundation wins, on a *system* fact this file wins. If this file and a system-layer file (`architecture.md`, `build-graph.md`, ...) disagree, this file wins.
-> **Working name:** "NIDS Live System" is a placeholder. Naming is open (Section 12).
+> **Name:** Caught, the verdict a NIDS exists to deliver (an intrusion caught, or a false alarm). Continues the v1 naming line: Inertia, Graphite, now Caught.
 
 **Status key:** ✅ locked · 🟡 in progress · ⬜ planned · 🕗 TBD (decide later) · **[LOCKED]** inline on settled decisions
 
@@ -129,7 +129,7 @@ The keystone unlock is the **end-to-end verdict path on replayed CSV data**: one
 - ✅ **Model registry shape** — manifest, all five loaded at startup, switch by id (Section 7 #9).
 - ✅ **Replay sources** — CSV and PCAP, both in-phase (Section 7 #10).
 - ✅ **Live detection metrics** — in-phase (Section 7 #10).
-- 🕗 **System name** — "NIDS Live System" is a placeholder. The models have names (Inertia, Graphite); the system may want one too.
+- ✅ **System name** — **Caught** (the verdict a NIDS delivers; continues the Inertia/Graphite naming line).
 - 🕗 **Live-capture tool** — deferred to a measured parity comparison (Section 7 #4).
 
 ---

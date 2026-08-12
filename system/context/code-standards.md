@@ -1,4 +1,4 @@
-# NIDS Live System — Code Standards
+# Caught — Code Standards
 
 > How code is written here. Read top to bottom each working session. For *why* a rule exists, see `foundation.md`; for the stack, see `library-docs.md`; for deploy/pipeline security, see `devops.md` (which wins on pipeline questions). This file folds in **data-handling security** as Section 6 (no separate `security.md` this phase).
 > **Authority:** `foundation.md` wins on any conflict.

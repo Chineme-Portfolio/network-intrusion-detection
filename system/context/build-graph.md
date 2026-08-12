@@ -1,4 +1,4 @@
-# NIDS Live System — Build Graph
+# Caught — Build Graph
 
 > **What this is:** a map of what-requires-what for the system, **not** a timeline or a prescribed order. For *why* any piece exists, see `foundation.md` (cited as `foundation.md Section 7 #N`). For lifecycle/what-is-built, see `progress-log.md`.
 > **Authority:** `system/context/foundation.md` wins on any conflict.

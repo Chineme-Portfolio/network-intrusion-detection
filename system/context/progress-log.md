@@ -1,4 +1,4 @@
-# NIDS Live System — Progress Log
+# Caught — Progress Log
 
 > The living build record for the **system** (phase 2). For the ML research project's history, see the root `LEARNING_LOG.md`. For settled decisions, see `foundation.md`; for what-depends-on-what, see `build-graph.md`.
 
@@ -7,6 +7,9 @@
 **Entry format:** `### YYYY-MM-DD · <category> · <title>` where category is one of {`feature`, `fix`, `refactor`, `chore`, `decision`, `docs`}. Then **area** (capture / ml-service / backend / frontend / shared / infra / context), one line of *what*, and *notes* (gotchas, follow-ups). Newest first.
 
 ---
+
+### 2026-08-11 · decision · Named the system "Caught"; added the design handoff
+Area: context. Named the system **Caught** (the verdict a NIDS delivers: an intrusion caught, or a false alarm; continues the Inertia/Graphite naming line). Rippled the name across all `system/` files and the root `AGENTS.md`; `foundation.md` -> v3, Section 12 name question resolved. Added `design-handoff.md` (the Claude Design intake prompt + the UI-trio generation prompt) and created `ui-tokens.md` / `ui-rules.md` / `ui-registry.md` as PENDING stubs. UI prime directive chosen: "make the current verdict, and whether to trust it, obvious at a glance."
 
 ### 2026-08-11 · docs · Phase 2 kickoff, system context system created
 Area: context. Opened phase 2 (the deployable NIDS system) as a separate context system in `system/`, layered on the v1 ML foundation. Wrote `foundation.md` (v2, converged), `build-graph.md`, and this log.

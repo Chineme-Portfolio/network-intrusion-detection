@@ -1,4 +1,4 @@
-# NIDS Live System — Architecture
+# Caught — Architecture
 
 > How the pieces fit. For *why* any choice was made, see `foundation.md` (cited as `foundation.md Section 7 #N`); for the stack's per-library usage and gotchas, see `library-docs.md`; for how code is written, see `code-standards.md`; for deploy/ops, see `devops.md`.
 > **Authority:** `foundation.md` wins on any conflict.

@@ -1,4 +1,4 @@
-# NIDS Live System — Library Docs
+# Caught — Library Docs
 
 > The stack as used *here*. For *why* each is chosen, see `foundation.md Section 7`; for how the pieces fit, see `architecture.md`. Link out for general library docs; this file states only this project's usage and traps.
 > **Authority:** `foundation.md` wins. **Rule: do not install anything outside the Approved Dependencies table without adding it here first.**

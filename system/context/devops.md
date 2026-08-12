@@ -1,4 +1,4 @@
-# NIDS Live System — DevOps
+# Caught — DevOps
 
 > The operational lifecycle as an authority document: environments, container build/deploy, secrets in the deploy path, observability, and the pipeline/supply-chain security gates (DevSecOps). For *why*, see `foundation.md`; for which tools/versions, see `library-docs.md` (this file owns how they are *operated*, not which they are).
 > **Authority:** this file wins on any deploy, pipeline, or operations conflict, **except** data-handling policy, which `code-standards.md` Section 6 owns. `foundation.md` still wins overall.

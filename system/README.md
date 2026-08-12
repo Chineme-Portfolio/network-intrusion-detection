@@ -1,4 +1,4 @@
-# NIDS Live System — Context Map
+# Caught — Context Map
 
 Front door for the **deployable NIDS system** (phase 2): capture (replay + live), model serving, runtime model-switching, backend, UI. This is a **separate context system** from the ML research project at the repo root; it cites that project for model facts and never restates them.
 
@@ -15,6 +15,8 @@ Front door for the **deployable NIDS system** (phase 2): capture (replay + live)
 | `context/devops.md` | Environments, container deploy, secrets, and the DevSecOps gates |
 | `context/build-graph.md` | What depends on what (the dependency map, keystone-first) |
 | `context/progress-log.md` | What has actually been built (newest first) |
+| `context/design-handoff.md` | The Claude Design intake prompt + the prompt that generates the UI trio |
+| `context/ui-tokens.md`, `ui-rules.md`, `ui-registry.md` | The UI trio (PENDING until the design export exists) |
 
 ## Reading order
 
@@ -43,5 +45,5 @@ When a decision changes, update `foundation.md` **first**, then ripple it into e
 
 ## Pending
 
-- **UI trio** (design-system tokens/rules/registry) is **not set up** — the frontend is a functional dashboard, not a design-language product. Add it later if the UI grows a real design system.
+- **UI trio** (`ui-tokens.md`, `ui-rules.md`, `ui-registry.md`) are **PENDING stubs**, generated from a Claude Design export once it exists. The intake prompt (what to paste into Claude Design) and the generation prompt live in `design-handoff.md`.
 - **Live-capture tool** is undecided pending the parity spike (`build-graph.md` F4).
