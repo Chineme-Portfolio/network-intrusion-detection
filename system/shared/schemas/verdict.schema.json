@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://caught.local/schemas/verdict.schema.json",
+  "title": "Verdict",
+  "description": "One classification result. The ml-service emits it on the Redis verdicts channel; the backend and UI consume it. Contract shape from spec 0001 Feature design; score semantics settled there.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "flow_id", "model_id", "verdict", "score", "score_kind", "latency_ms", "ts"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Contract version. A breaking change bumps it."
+    },
+    "flow_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Matches the flow record this verdict is for."
+    },
+    "model_id": {
+      "type": "string",
+      "description": "The active model that produced this verdict (a registry manifest model_id)."
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["benign", "malicious"],
+      "description": "The binary classification."
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Malicious confidence, 0 to 1."
+    },
+    "score_kind": {
+      "type": "string",
+      "enum": ["calibrated", "uncalibrated"],
+      "description": "calibrated = predict_proba (the tree). uncalibrated = sigmoid(decision_function) (the SVMs). The UI labels an uncalibrated score so a distance is not read as a probability."
+    },
+    "latency_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Inference latency for this flow, in milliseconds."
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the verdict was produced, ISO 8601."
+    },
+    "ground_truth": {
+      "type": ["string", "null"],
+      "description": "Echoed from the flow record for the metrics slice. Null for live."
+    }
+  }
+}

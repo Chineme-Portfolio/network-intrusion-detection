@@ -1,0 +1,13 @@
+# Caught ml-service — Layer 0 dependencies (/health only).
+#
+# The ML stack (scikit-learn 1.8.0, joblib, pandas, numpy) is added with the
+# keystone (K1), when the featurizer + registry are wired — see library-docs.md.
+# scikit-learn MUST be pinned to 1.8.0 there (the version the v1 models were
+# trained under); unpickling under another version can silently shift behavior.
+# Keeping this image light until then.
+#
+# Compatible ranges (not exact pins) at Layer 0; a lockfile / exact pins come
+# with the ML deps in K1.
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.34,<1.0
+pydantic>=2.10,<3.0

@@ -1,0 +1,5 @@
+# Codegen + validation, Python side.
+# datamodel-code-generator turns the JSON Schemas into Pydantic v2 models;
+# pydantic runs them to validate payloads (validate.py). See codegen/README.md.
+datamodel-code-generator>=0.25,<1.0
+pydantic>=2.10,<3.0

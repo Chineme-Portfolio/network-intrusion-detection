@@ -1,0 +1,90 @@
+<!-- @dsCard group="Console" viewport="1440x900" name="Caught console" subtitle="Live flow stream, verdict rail, flow detail, model switching" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Caught — console</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="data.js"></script>
+<style>html,body{height:100%;margin:0;background:var(--canvas);overflow:hidden}#root{height:100vh}</style>
+</head>
+<body><div id="root"></div>
+<script type="text/babel" src="AppShell.jsx"></script>
+<script type="text/babel" src="LiveFlows.jsx"></script>
+<script type="text/babel" src="FlowDetail.jsx"></script>
+<script type="text/babel" src="Models.jsx"></script>
+<script type="text/babel" src="Alerts.jsx"></script>
+<script type="text/babel" src="Sources.jsx"></script>
+<script type="text/babel">
+const { Dialog, Button, Select, Toast, InlineAlert } = window.CaughtDesignSystem_eb3eb1;
+
+const TITLES = {
+  live: { eyebrow: 'STREAM', title: 'Live flows' },
+  alerts: { eyebrow: 'TRIAGE', title: 'Alerts' },
+  models: { eyebrow: 'CLASSIFIERS', title: 'Models' },
+  sources: { eyebrow: 'CAPTURE', title: 'Sources' },
+};
+
+function Console() {
+  const models = window.CaughtData.models;
+  const [screen, setScreen] = React.useState('live');
+  const [model, setModel] = React.useState('rf-v4');
+  const [pending, setPending] = React.useState(null);
+  const [flow, setFlow] = React.useState(null);
+  const [paused, setPaused] = React.useState(false);
+  const [toast, setToast] = React.useState({ tone: 'alert', title: 'Malicious burst detected', meta: '14:22:07', message: '42 flows from 10.4.19.22 scored above 0.95.' });
+
+  const commit = () => {
+    setModel(pending);
+    setToast({ tone: 'live', title: pending + ' loaded', meta: '0.8s', message: 'Scoring resumed from the next flow.' });
+    setPending(null);
+  };
+
+  const screens = {
+    live: <window.LiveFlows model={model} onInspect={setFlow} selectedId={flow && flow.id} paused={paused} onPause={() => setPaused((p) => !p)} />,
+    alerts: <window.Alerts model={model} onInspect={() => setScreen('live')} />,
+    models: <window.Models model={model} onRequestSwitch={setPending} />,
+    sources: <window.Sources />,
+  };
+
+  return (
+    <window.AppShell
+      screen={screen} onScreen={(s) => { setScreen(s); setFlow(null); }}
+      model={model} models={models} onSwitchModel={setPending}
+      eyebrow={TITLES[screen].eyebrow} title={TITLES[screen].title}
+      paused={paused}
+      statusRight={<span>{paused ? 'paused' : 'live'} · 14:22:07 UTC</span>}
+      actions={<Button size="sm" icon="arrow-left-right" onClick={() => setScreen('models')}>Compare models</Button>}
+    >
+      {screens[screen]}
+      {flow ? <window.FlowDetail flow={flow} model={model} onClose={() => setFlow(null)} /> : null}
+      {pending ? (
+        <Dialog title="Switch active model" icon="cpu" width={440} onClose={() => setPending(null)}
+          description="Classification restarts from the next flow. Flows already scored keep their current verdict."
+          footer={<>
+            <Button variant="ghost" onClick={() => setPending(null)}>Cancel</Button>
+            <Button variant="primary" icon="check" onClick={commit}>Switch to {pending}</Button>
+          </>}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-12)' }}>
+            <Select label="Model" mono value={pending} onChange={setPending} fullWidth
+              options={models.map((m) => ({ value: m.id, label: m.id + ' — ' + m.name }))} />
+            <InlineAlert tone="quiet" title={'F1 ' + models.find((m) => m.id === pending).f1.toFixed(3) + ' · ' + models.find((m) => m.id === pending).latency.toFixed(1) + ' ms per flow'}>
+              Measured on the held-out split of CIC-IDS2017.
+            </InlineAlert>
+          </div>
+        </Dialog>
+      ) : null}
+      {toast ? (
+        <div style={{ position: 'absolute', right: 'var(--space-16)', bottom: 'var(--space-16)', zIndex: 30 }}>
+          <Toast {...toast} onDismiss={() => setToast(null)}
+            action={toast.tone === 'alert' ? <Button size="sm" icon="eye" onClick={() => { setScreen('alerts'); setToast(null); }}>Open alerts</Button> : null} />
+        </div>
+      ) : null}
+    </window.AppShell>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Console />);
+</script>
+</body></html>

@@ -1,7 +1,7 @@
 # 0001. Layer 0 foundation: scaffold, contracts, and the parity featurizer
 
 **Date**: 2026-08-12
-**Status**: Proposed
+**Status**: Accepted
 
 ## Summary
 

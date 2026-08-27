@@ -13,9 +13,9 @@
 
 These have no dependencies and gate almost all downstream work. All three are buildable from a cold start.
 
-- **L0.1 Repo + infra scaffold** ⬜ — the `system/` service skeletons (`capture/`, `ml-service/`, `backend/`, `frontend/`, `shared/`) and a `docker-compose` that stands up Redis and the services locally. *Needs:* nothing.
-- **L0.2 The shared contracts** ⬜ — `system/shared/`: the **flow-record** schema, the **verdict** schema, and the **registry manifest** schema (versioned). Every service reads these. *Needs:* nothing (design from `foundation.md` Section 7 #9).
-- **L0.3 The v1 featurizer as an importable module** ⬜ — extract the `02`/`02b` cleaning + IANA port bucketing from the notebooks into a shared Python function the ml-service imports, plus access to the five joblib models in `models/`. *Needs:* nothing (pure refactor of v1 code). This is the parity guarantee (`foundation.md` Section 7 #5).
+- **L0.1 Repo + infra scaffold** ✅ — the `system/` service skeletons (`capture/`, `ml-service/`, `backend/`, `frontend/`, `shared/`) and a `docker-compose` that stands up Redis and the services locally. *Needs:* nothing. *Built 2026-08-12:* `docker compose up` starts all five; ml-service `GET /health` returns 200 (AC-1 verified).
+- **L0.2 The shared contracts** ✅ — `system/shared/`: the **flow-record** schema, the **verdict** schema, and the **registry manifest** schema (versioned). Every service reads these. *Needs:* nothing (design from `foundation.md` Section 7 #9). *Built 2026-08-12:* three JSON Schemas (draft 2020-12) in `shared/schemas/`, codegen to Pydantic v2 + TypeScript, and a two language validation check (samples validate, a missing required field is rejected) both green (AC-2, AC-3 verified).
+- **L0.3 The v1 featurizer as an importable module** ✅ — extract the `02`/`02b` cleaning + IANA port bucketing from the notebooks into a shared Python function the ml-service imports, plus access to the five joblib models in `models/`. *Needs:* nothing (pure refactor of v1 code). This is the parity guarantee (`foundation.md` Section 7 #5). *Built 2026-08-12:* `system/ml-service/featurizer/` ports `02`/`02b` faithfully, reads the frozen `featurizer_meta.json` (train max, 67 column order, dtypes), and a golden fixture parity test reproduces frozen v1 exactly on 25 rows and catches drift (AC-4, AC-5, AC-6 verified). Model loading is wired at K1.
 
 ## Keystone unlock — the end-to-end verdict path on CSV replay
 

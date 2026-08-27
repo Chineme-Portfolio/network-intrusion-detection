@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+*.tsbuildinfo
+
+# Design-system export: source of truth for the UI trio + porting, not runtime code.
+design

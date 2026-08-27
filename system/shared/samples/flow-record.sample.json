@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "flow_id": "6f9619ff-8b86-d011-b42d-00c04fc964ff",
+  "ts": "2026-08-12T14:22:07.412Z",
+  "src_ip": "10.4.19.22",
+  "src_port": 51204,
+  "dst_ip": "192.168.10.50",
+  "dst_port": 80,
+  "protocol": 6,
+  "features": {
+    "destination_port": 80,
+    "flow_duration": 1200345,
+    "total_fwd_packets": 12,
+    "total_backward_packets": 10,
+    "flow_bytes_s": 84512.5,
+    "flow_packets_s": 18.3
+  },
+  "ground_truth": "BENIGN"
+}

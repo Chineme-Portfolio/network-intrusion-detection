@@ -16,7 +16,7 @@ Front door for the **deployable NIDS system** (phase 2): capture (replay + live)
 | `context/build-graph.md` | What depends on what (the dependency map, keystone-first) |
 | `context/progress-log.md` | What has actually been built (newest first) |
 | `context/design-handoff.md` | The Claude Design intake prompt + the prompt that generates the UI trio |
-| `context/ui-tokens.md`, `ui-rules.md`, `ui-registry.md` | The UI trio (PENDING until the design export exists) |
+| `context/ui-tokens.md`, `ui-rules.md`, `ui-registry.md` | The UI trio, generated from the design export at `frontend/design/`: the tokens, the composition rules, the component registry |
 
 ## Reading order
 
@@ -45,5 +45,4 @@ When a decision changes, update `foundation.md` **first**, then ripple it into e
 
 ## Pending
 
-- **UI trio** (`ui-tokens.md`, `ui-rules.md`, `ui-registry.md`) are **PENDING stubs**, generated from a Claude Design export once it exists. The intake prompt (what to paste into Claude Design) and the generation prompt live in `design-handoff.md`.
 - **Live-capture tool** is undecided pending the parity spike (`build-graph.md` F4).
