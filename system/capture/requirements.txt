@@ -1,5 +1,8 @@
-# Caught capture — Layer 0 dependencies.
+# Caught capture — K1 dependencies (CSV replay adapter, spec 0002).
 #
-# The idle skeleton needs nothing. The CSV-replay adapter (K1) adds redis-py
-# (publish flow records) and pandas (read labeled CICIDS rows) — added then, not
-# now (no scaffolding ahead, code-standards.md Section 1).
+# redis-py publishes flow records to the `flows` channel. pandas reads the labeled
+# CICIDS CSV the way v1 read it (numeric inference, including Infinity/NaN in the rate
+# columns), so the featurizer at serving sees the same raw values training did.
+redis>=5.2,<7.0
+pandas>=2.2,<4.0
+numpy>=1.26,<3.0

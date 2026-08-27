@@ -1,0 +1,20 @@
+/* Minimal global floor: reset, document defaults, links, focus, scrollbars. */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--surface-app);color:var(--text-body);font:var(--type-body);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,h4,p,figure{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--text-link);text-decoration:none;border-bottom:1px solid rgba(108,197,208,.32);
+  transition:color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out)}
+a:hover{color:var(--text-link-hover);border-bottom-color:var(--cyan-400)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{
+  outline:none;box-shadow:var(--ring-focus)}
+::selection{background:rgba(79,175,188,.28);color:var(--steel-100)}
+code,kbd,samp{font-family:var(--font-mono);font-size:.95em}
+[hidden]{display:none!important}
+*{scrollbar-width:thin;scrollbar-color:var(--ink-650) transparent}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{background:var(--ink-650);border:3px solid transparent;background-clip:content-box;border-radius:var(--radius-pill)}
+*::-webkit-scrollbar-thumb:hover{background:var(--ink-600);background-clip:content-box}

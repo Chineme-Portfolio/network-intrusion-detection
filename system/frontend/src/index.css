@@ -1,18 +1,30 @@
-:root {
-  color-scheme: light dark;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
+/* App-level reset and layout. The design tokens live in styles/ (vendored from the
+   export); this file only sets the full-height shell and the inline-SVG icon rule. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-body {
+html,
+body,
+#root {
+  height: 100%;
   margin: 0;
 }
 
-.shell {
-  padding: 2rem;
-  max-width: 42rem;
+body {
+  background: var(--canvas);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-.tagline {
-  opacity: 0.75;
+/* The Icon primitive injects raw Lucide SVG; make it fill its sizing wrapper and follow
+   the current text color (Lucide uses stroke="currentColor"). */
+.caught-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }

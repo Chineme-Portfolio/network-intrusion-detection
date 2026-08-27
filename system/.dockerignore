@@ -1,0 +1,25 @@
+# Build context is system/ for the ml-service and backend images (they codegen from
+# shared/schemas). Keep the context small: exclude everything the builds do not COPY.
+**/.venv
+**/__pycache__
+**/*.pyc
+**/node_modules
+**/dist
+**/build
+**/.vite
+**/*.tsbuildinfo
+
+# Generated code is regenerated at build from shared/schemas, never shipped from the host.
+shared/generated
+
+# Not needed inside any image.
+.git
+.env
+.env.local
+context
+docs
+frontend
+capture/.venv
+
+# The design export is a large handoff reference, never part of a runtime image.
+frontend/design

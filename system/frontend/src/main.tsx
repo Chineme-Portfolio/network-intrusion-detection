@@ -1,8 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import './styles/styles.css'; // the design tokens (vendored from the export)
+import './index.css'; // app-level reset + the icon rule
 import App from './App';
-import './index.css';
 
 const root = document.getElementById('root');
 if (!root) {
