@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "default_model_id": "dt_classweight",
+  "models": [
+    {
+      "model_id": "dt_classweight",
+      "display_name": "Inertia (decision tree)",
+      "family": "tree",
+      "path": "dt_classweight.joblib",
+      "supports_proba": true,
+      "metrics": { "recall": 0.997, "precision": 0.994, "fn": 340, "fp": 690 }
+    },
+    {
+      "model_id": "linsvc_classweight",
+      "display_name": "Graphite linear (LinearSVC)",
+      "family": "linear_svm",
+      "path": "linsvc_classweight.joblib",
+      "supports_proba": false,
+      "metrics": { "recall": 0.95, "precision": 0.90, "fn": 5600, "fp": 11200 }
+    },
+    {
+      "model_id": "rbf50k_classweight",
+      "display_name": "Graphite RBF (50k)",
+      "family": "rbf_svm",
+      "path": "rbf50k_classweight.joblib",
+      "supports_proba": false,
+      "metrics": { "recall": 0.96, "precision": 0.92, "fn": 4500, "fp": 9100 }
+    },
+    {
+      "model_id": "rbf250k_classweight",
+      "display_name": "Graphite RBF (250k)",
+      "family": "rbf_svm",
+      "path": "rbf250k_classweight.joblib",
+      "supports_proba": false,
+      "metrics": { "recall": 0.968, "precision": 0.931, "fn": 3900, "fp": 8200 }
+    },
+    {
+      "model_id": "rbf500k_classweight",
+      "display_name": "Graphite RBF (500k)",
+      "family": "rbf_svm",
+      "path": "rbf500k_classweight.joblib",
+      "supports_proba": false,
+      "metrics": { "recall": 0.972, "precision": 0.938, "fn": 3500, "fp": 7600 }
+    }
+  ]
+}

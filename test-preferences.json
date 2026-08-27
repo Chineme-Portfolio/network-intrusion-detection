@@ -6,5 +6,5 @@
   "testDir": "tests",
   "filePattern": "test_*.py",
   "packageManager": "pip",
-  "notes": "Polyglot repo. Primary test surface is Python (pytest). Two package roots, each with its own venv: system/ml-service (featurizer suite; needs pandas+numpy, see requirements-test.txt) and system/shared/codegen/python (contract suite; needs the generated models via generate.sh). The TypeScript contract check is a compile-time tsc check at system/shared/codegen/typescript/test-contracts.ts, run via generate.sh + tsc, not a JS test runner."
+  "notes": "Polyglot repo. Primary test surface is Python (pytest). Python roots: system/ml-service (featurizer parity + app unit suites; needs pandas+numpy+pydantic, see requirements-test.txt) and system/shared/codegen/python (contract suite; needs the generated models via generate.sh). The backend (system/backend, TypeScript) has a Vitest suite for the correlation logic: `npm test` in system/backend. The TypeScript contract check is a separate compile-time tsc check at system/shared/codegen/typescript/test-contracts.ts, run via generate.sh + tsc."
 }

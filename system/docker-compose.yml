@@ -1,21 +1,20 @@
-# Caught — local dev topology (Layer 0).
+# Caught — local dev topology. K1 (spec 0002): one flow travels the whole spine.
 #
-# `docker compose up` from system/ starts Redis plus the four service skeletons.
-# At Layer 0 only the ml-service serves a real endpoint (GET /health, AC-1);
-# capture, backend, and frontend boot into the topology as skeletons so the real
-# shape exists from the first slice (foundation.md Section 9, Section 7 #10).
+# `docker compose up` from system/ starts Redis and the four services. Capture replays a
+# labeled CICIDS CSV to Redis `flows`; the ml-service classifies each flow and publishes a
+# verdict to `verdicts`; the backend correlates flow+verdict and pushes merged rows over a
+# websocket; the frontend renders them live.
 #
-# Secrets and config come from the environment only (code-standards.md Section 6):
-# copy .env.example to .env to override any default below. Nothing is persisted
-# this phase (foundation.md Section 8), so up/down is stateless.
+# Secrets and config come from the environment only (code-standards.md Section 6): copy
+# .env.example to .env to override any default below. Nothing is persisted (foundation.md
+# Section 8), so up/down is stateless. The v1 models and the CSV data are git-ignored and
+# mounted read-only from the repo root.
 
 services:
   redis:
     image: redis:7-alpine
-    # Not published to the host: only the services on this compose network reach
-    # the pub/sub spine (at redis:6379). Internal-only avoids host port clashes
-    # and keeps Redis off the host surface (code-standards.md Section 6). To poke
-    # it directly in dev: `docker compose exec redis redis-cli`.
+    # Internal-only (not published to the host): the pub/sub spine stays off the host
+    # surface. Poke it in dev with `docker compose exec redis redis-cli`.
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -23,60 +22,85 @@ services:
       retries: 5
 
   ml-service:
-    build: ./ml-service
-    # Host ports are parameterized (override in .env) so the topology comes up
-    # even when a host port is already taken by another project.
+    # Build context is system/ so the image can codegen the Pydantic contracts from
+    # shared/schemas (single source of truth).
+    build:
+      context: .
+      dockerfile: ml-service/Dockerfile
     ports:
       - "${ML_SERVICE_PORT:-8000}:8000"
+    volumes:
+      - ../models:/models:ro
     environment:
-      # The pub/sub spine. Consumed from the keystone (K1) on; /health never
-      # touches it, so the skeleton is healthy before there is anything to serve.
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      MODELS_DIR: /models
+      MANIFEST_PATH: /app/registry.manifest.json
+      FEATURIZER_META: /app/featurizer/featurizer_meta.json
+      # Optional: pin which single model K1 loads. Empty = the manifest default (the tree).
+      CAUGHT_MODEL_ID: ${CAUGHT_MODEL_ID:-}
     depends_on:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      # Ready = the model is loaded AND the `flows` subscription is live (503 until then).
+      # Capture and the backend gate on this, so no early flow is lost to Redis pub/sub.
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/ready')"]
       interval: 5s
       timeout: 3s
-      retries: 5
-
-  capture:
-    build: ./capture
-    environment:
-      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
-    depends_on:
-      redis:
-        condition: service_healthy
+      retries: 24
+      start_period: 20s
 
   backend:
-    build: ./backend
-    # Default host port 3001 (3000 is a common dev-server port; override in .env).
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     ports:
       - "${BACKEND_PORT:-3001}:3000"
     environment:
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
-      # Where control actions proxy to (from K1); harmless at Layer 0.
       ML_SERVICE_URL: ${ML_SERVICE_URL:-http://ml-service:8000}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
     depends_on:
       redis:
         condition: service_healthy
       ml-service:
         condition: service_healthy
     healthcheck:
+      # /health responds only after onModuleInit runs, so a healthy backend has already
+      # subscribed the `verdicts` channel: capture can safely gate on it.
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
       interval: 5s
       timeout: 3s
       retries: 10
+
+  capture:
+    build: ./capture
+    volumes:
+      - ../data:/data:ro
+    environment:
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      ML_SERVICE_URL: ${ML_SERVICE_URL:-http://ml-service:8000}
+      # A labeled CICIDS file (git-ignored, mounted). DDoS + benign is a clear demo mix.
+      REPLAY_CSV: ${REPLAY_CSV:-/data/raw/MachineLearningCVE/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv}
+      REPLAY_RATE: ${REPLAY_RATE:-12}
+      REPLAY_LOOP: ${REPLAY_LOOP:-false}
+      REPLAY_SHUFFLE: ${REPLAY_SHUFFLE:-true}
+    depends_on:
+      redis:
+        condition: service_healthy
+      # Wait for BOTH subscriptions to be live before the first flow is published.
+      ml-service:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
 
   frontend:
     build: ./frontend
     ports:
       - "${FRONTEND_PORT:-5173}:5173"
     environment:
-      # The browser reaches the backend (never the ml-service or Redis directly,
-      # architecture.md Boundaries). Wired in K1/F2.
+      # The browser reaches the backend only (architecture.md Boundaries).
       VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:3001}
     depends_on:
       backend:
-        condition: service_started
+        condition: service_healthy

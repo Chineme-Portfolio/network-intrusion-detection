@@ -1,0 +1,5 @@
+/* Webfonts. No vendor binaries were supplied with the brief, so both families load
+   from Google Fonts. Swap these two @import lines for local @font-face rules if
+   licensed files arrive. Barlow = UI chrome. Azeret Mono = all flow data. */
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;600&display=swap");

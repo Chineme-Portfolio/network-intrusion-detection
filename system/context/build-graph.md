@@ -19,7 +19,7 @@ These have no dependencies and gate almost all downstream work. All three are bu
 
 ## Keystone unlock — the end-to-end verdict path on CSV replay
 
-- **K1 One flow to one verdict, streamed, full topology** ⬜ — CSV-replay capture publishes a flow record to Redis `flows`; the FastAPI ml-service subscribes, featurizes (L0.3), classifies with a single loaded model, publishes a verdict to Redis `verdicts`; NestJS subscribes and pushes it over a websocket; React renders it in a flow/verdict table. *Needs:* L0.1, L0.2, L0.3.
+- **K1 One flow to one verdict, streamed, full topology** ✅ — CSV-replay capture publishes a flow record to Redis `flows`; the FastAPI ml-service subscribes, featurizes (L0.3), classifies with a single loaded model, publishes a verdict to Redis `verdicts`; NestJS subscribes and pushes it over a websocket; React renders it in a flow/verdict table. *Needs:* L0.1, L0.2, L0.3. *Built 2026-08-27 (spec 0002):* `docker compose up` runs the whole spine; 1500 flows classified end to end, malicious flagged, verdicts match ground truth; locked with 36 unit tests. The fan-out (F1 to F7) is now unblocked.
 - **Why keystone:** once one flow travels the whole spine, every other capability below is "more of the same": another source, another model, a richer view. It proves the polyglot architecture before the fan-out (`foundation.md` Section 9, Section 7 #10).
 
 ## Fan-out — capabilities and their dependency edges
