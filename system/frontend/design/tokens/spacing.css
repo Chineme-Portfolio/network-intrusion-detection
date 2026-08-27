@@ -1,0 +1,32 @@
+/* 2px base unit; the console runs on 4s and 8s with 2px available for hairline
+   nudges inside dense rows. Radii stay small — technical, not playful. */
+:root{
+  --space-2:2px;--space-4:4px;--space-6:6px;--space-8:8px;--space-10:10px;
+  --space-12:12px;--space-16:16px;--space-20:20px;--space-24:24px;--space-32:32px;
+  --space-40:40px;--space-48:48px;--space-64:64px;
+
+  --radius-xs:2px;   /* chips, swatches, inline code */
+  --radius-sm:3px;   /* buttons, inputs, tags */
+  --radius-md:4px;   /* cards, panels */
+  --radius-lg:6px;   /* dialogs, overlays */
+  --radius-pill:999px; /* status dots and pills only */
+
+  --border-width:1px;
+  --border-width-emphasis:2px;
+
+  /* Control + row metrics */
+  --control-h-sm:22px;
+  --control-h-md:28px;
+  --control-h-lg:34px;
+  --row-h-dense:26px;
+  --row-h:30px;
+  --row-h-comfy:36px;
+
+  /* Layout frame */
+  --sidebar-w:196px;
+  --sidebar-w-collapsed:48px;
+  --topbar-h:44px;
+  --statusbar-h:26px;
+  --detail-w:420px;
+  --gutter:16px;
+}

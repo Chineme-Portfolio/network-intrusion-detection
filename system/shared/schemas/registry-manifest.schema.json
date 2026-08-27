@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://caught.local/schemas/registry-manifest.schema.json",
+  "title": "RegistryManifest",
+  "description": "The set of loadable models and which one is active by default. The ml-service loads this at startup and switches the active model by id. Contract shape from spec 0001 Feature design.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "default_model_id", "models"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Contract version. A breaking change bumps it."
+    },
+    "default_model_id": {
+      "type": "string",
+      "description": "The model_id active at startup. Must appear in models."
+    },
+    "models": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Every loadable model.",
+      "items": { "$ref": "#/$defs/model_entry" }
+    }
+  },
+  "$defs": {
+    "model_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_id", "display_name", "family", "path", "supports_proba", "metrics"],
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "description": "Stable id used to switch the active model at runtime."
+        },
+        "display_name": {
+          "type": "string",
+          "description": "Human readable name for the UI."
+        },
+        "family": {
+          "type": "string",
+          "enum": ["tree", "linear_svm", "rbf_svm"],
+          "description": "Model family. Drives score semantics: the tree supports predict_proba, the SVMs do not."
+        },
+        "path": {
+          "type": "string",
+          "description": "Path to the joblib artifact (scaler plus model bundled)."
+        },
+        "supports_proba": {
+          "type": "boolean",
+          "description": "True if the model exposes predict_proba (the tree). False for the SVMs."
+        },
+        "metrics": { "$ref": "#/$defs/metrics" }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recall", "precision", "fn", "fp"],
+      "description": "The v1 held out metrics from notebook 07_comparison.",
+      "properties": {
+        "recall": { "type": "number", "minimum": 0, "maximum": 1, "description": "Detection rate on the malicious class." },
+        "precision": { "type": "number", "minimum": 0, "maximum": 1, "description": "Precision on the malicious class." },
+        "fn": { "type": "integer", "minimum": 0, "description": "False negatives (missed intrusions)." },
+        "fp": { "type": "integer", "minimum": 0, "description": "False positives (false alarms)." }
+      }
+    }
+  }
+}

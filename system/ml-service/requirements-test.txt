@@ -1,0 +1,14 @@
+# Caught ml-service — test-time dependencies (not shipped in the runtime image).
+#
+# The featurizer parity + validation suite (featurizer/tests/) needs pandas + numpy
+# to run, but the Layer 0 image stays slim (see requirements.txt): the ML stack lands
+# with the keystone (K1). Keep these out of the image; install them only for tests:
+#
+#   python -m venv .venv && .venv/bin/pip install -r requirements.txt -r requirements-test.txt
+#   .venv/bin/python -m pytest featurizer/tests/ -q
+#
+# Compatible ranges (not exact pins) at Layer 0; K1 pins pandas/numpy alongside the
+# scikit-learn 1.8.0 the v1 models were trained under.
+pytest>=8,<10
+pandas>=2.2,<4
+numpy>=1.26,<3

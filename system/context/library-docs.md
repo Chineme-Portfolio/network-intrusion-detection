@@ -25,7 +25,9 @@
 
 ## shared + infra
 
-- **JSON Schema / shared types** 🟡 — the contracts in `system/shared/`, the single source for flow-record / verdict / registry-manifest shapes across Python and TypeScript.
+- **JSON Schema / shared types** ✅ — the contracts in `system/shared/schemas/`, the single source for flow-record / verdict / registry-manifest shapes across Python and TypeScript. Draft 2020-12.
+- **datamodel-code-generator** ✅ — codegen, JSON Schema to Pydantic v2 models (`--output-model-type pydantic_v2.BaseModel`). Run via `system/shared/codegen/generate.sh`. **Gotcha:** it emits an inner enum class named after the model with a numeric suffix (for example `Verdict1` inside the `Verdict` model) when a field shares the model's name; harmless, do not rename the generated file.
+- **json-schema-to-typescript** ✅ — codegen, JSON Schema to TypeScript types (used via its `compileFromFile` API in `generate-ts.mjs`). Output is git ignored (`system/shared/generated/`); the schemas are the source of truth.
 - **Docker + docker-compose** 🟡 — Redis + all services locally; container images for real-infra deploy (`devops.md`).
 
 ## Approved Dependencies
@@ -39,6 +41,8 @@
 | @nestjs/*, socket.io, ioredis | backend | control API + WS + Redis | 🟡 |
 | @socket.io/redis-adapter | backend | multi-instance WS scaling | 🕗 |
 | react (19), vite, socket.io-client | frontend | UI | 🟡 |
+| datamodel-code-generator | shared (codegen) | JSON Schema to Pydantic v2 | ✅ |
+| json-schema-to-typescript | shared (codegen) | JSON Schema to TypeScript types | ✅ |
 | docker, docker-compose | infra | local + deploy | 🟡 |
 
 **No dependency is added without a row here first.**

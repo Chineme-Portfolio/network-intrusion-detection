@@ -1,0 +1,27 @@
+<!-- @dsCard group="Components" viewport="700x300" name="Surfaces" subtitle="Panel, Card, Dialog, Tooltip" -->
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--surface-app);padding:14px}#root{display:flex;flex-direction:column;gap:14px}.lbl{font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-faint);margin-bottom:8px}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+const {Panel,Card,Dialog,Tooltip,Button,IconButton,MetricStat,VerdictChip} = window.CaughtDesignSystem_eb3eb1;
+function Demo(){return (<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,alignItems:"start"}}>
+<Panel eyebrow="STREAM" title="Live flows" meta="12,481 / 15m" icon="activity"
+ actions={<><IconButton icon="pause" label="Pause" size="sm"/><IconButton icon="list-filter" label="Filters" size="sm" active/></>}
+ footer={<span>eth0 &middot; 1.24 Gbps &middot; drop 0.02%</span>}>
+<div style={{display:"flex",gap:24}}><MetricStat label="Scored" value="12,481" size="sm"/><MetricStat label="Malicious" value="37" size="sm"/></div></Panel>
+<Card title="rf-v4" meta="F1 0.981" interactive selected>
+<div style={{font:"var(--type-ui)",fontWeight:400,color:"var(--text-secondary)"}}>Random forest, 120 trees. Trained on CIC-IDS2017.</div></Card>
+<Panel tone="alert" eyebrow="ALERT" title="Port scan pattern" icon="shield-alert"
+ actions={<Button size="sm" icon="eye">Inspect</Button>}>
+<div className="row"><VerdictChip verdict="malicious" size="md" confidence={0.97}/><Tooltip content="Hover reveals the full feature vector"><span style={{font:"var(--type-data-dense)",color:"var(--text-muted)",borderBottom:"1px dotted var(--border-strong)"}}>14 features</span></Tooltip></div></Panel>
+<div style={{position:"relative",height:132,border:"1px solid var(--border-hairline)",borderRadius:"var(--radius-md)",overflow:"hidden"}}>
+<Dialog title="Switch active model" icon="cpu" width={300} description="Classification restarts from the next flow." onClose={()=>{}}
+ footer={<><Button variant="ghost" size="sm">Cancel</Button><Button variant="primary" size="sm">Switch</Button></>}/></div>
+</div>);}
+ReactDOM.createRoot(document.getElementById("root")).render(<Demo/>);
+</script></body></html>

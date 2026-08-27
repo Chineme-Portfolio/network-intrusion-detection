@@ -1,0 +1,11 @@
+# Caught shared contracts — test-time dependencies (Python side).
+#
+# The contract suite (tests/test_contracts.py) validates the sample payloads against
+# the generated Pydantic v2 models, so it needs the codegen deps (requirements.txt:
+# pydantic + datamodel-code-generator) plus pytest. Generate the models once first,
+# since they are git ignored:
+#
+#   pip install -r requirements.txt -r requirements-test.txt
+#   bash ../generate.sh          # writes system/shared/generated/python/caught_contracts
+#   python -m pytest tests/ -q
+pytest>=8,<10

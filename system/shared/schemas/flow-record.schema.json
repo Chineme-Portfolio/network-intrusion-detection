@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://caught.local/schemas/flow-record.schema.json",
+  "title": "FlowRecord",
+  "description": "One captured network flow. Capture emits it on the Redis flows channel; the ml-service consumes it. Capture stays dumb: features holds the raw CICFlowMeter fields under their emitted names, and the featurizer (ml-service) owns all renaming and cleaning. Contract shape from spec 0001 Feature design.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "flow_id", "ts", "src_ip", "src_port", "dst_ip", "dst_port", "protocol", "features"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Contract version. A breaking change bumps it (spec 0001 key invariants)."
+    },
+    "flow_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique id for this flow. The verdict echoes it back."
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Capture time, ISO 8601."
+    },
+    "src_ip": {
+      "type": "string",
+      "description": "Source address (part of the 5 tuple)."
+    },
+    "src_port": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "description": "Source port (part of the 5 tuple)."
+    },
+    "dst_ip": {
+      "type": "string",
+      "description": "Destination address (part of the 5 tuple)."
+    },
+    "dst_port": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "description": "Destination port (part of the 5 tuple). Must equal features.destination_port."
+    },
+    "protocol": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "IP protocol number (part of the 5 tuple), for example 6 for TCP or 17 for UDP."
+    },
+    "features": {
+      "type": "object",
+      "description": "The raw CICFlowMeter fields under their emitted names. The featurizer reads and cleans these into the 67 feature vector. Extra fields are allowed so capture stays dumb; destination_port is required and must equal dst_port.",
+      "additionalProperties": true,
+      "required": ["destination_port"],
+      "properties": {
+        "destination_port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "Raw destination port. The featurizer buckets on this and cross checks it against the top level dst_port."
+        }
+      }
+    },
+    "ground_truth": {
+      "type": ["string", "null"],
+      "description": "The true label when replaying labeled CICIDS data (for the metrics slice). Null for live capture."
+    }
+  }
+}
